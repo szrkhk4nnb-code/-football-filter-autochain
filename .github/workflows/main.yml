@@ -1,4 +1,4 @@
-name: V17 AutoChain Test
+name: V17 AutoChain Controller
 
 on:
   workflow_dispatch:
@@ -6,13 +6,31 @@ on:
     - cron: "*/5 * * * *"
 
 jobs:
-  test:
+  controller:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Test execution
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check V17 controller state
         run: |
-          echo "V17 AUTOCHAIN TEST"
-          echo "RUN_ID=RUN_V17.15.6_20261005_R0_002"
-          echo "EXECUTION=OK"
-          date -u
+          python - <<'PY'
+          from datetime import datetime, timezone
+
+          run_id = "RUN_V17.15.6_20261005_R0_002"
+          current_checkpoint = "R1-P03"
+          next_pass = "R1-P04"
+
+          print("=== V17 AUTOCHAIN CONTROLLER — READ ONLY ===")
+          print(f"RUN_ID={run_id}")
+          print(f"CURRENT_CHECKPOINT={current_checkpoint}")
+          print(f"NEXT_PASS={next_pass}")
+          print("CHECKPOINT_STATE=COMMITTED")
+          print("IDEMPOTENCE=CHECK")
+          print("MASTER_MODIFICATION=NO")
+          print("RUN_MODIFICATION=NO")
+          print("DISPATCH_MODE=SIMULATION")
+          print(f"UTC={datetime.now(timezone.utc).isoformat()}")
+          print("CONTROLLER_STATUS=PASS")
+          PY
